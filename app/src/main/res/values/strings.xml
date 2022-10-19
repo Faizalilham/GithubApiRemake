@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">GithubApiRemake</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tittle">Enter Tittle</string>
+    <string name="enter_description">Enter Description</string>
+    <string name="save">Save</string>
+    <string name="login">Login</string>
+    <string name="account_haved">Do you he an account?</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="register_now">Register Now</string>
+    <string name="register">Register</string>
+    <string name="joined_us_before">Joined us before ?</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="profile">Profile</string>
+    <string name="hello_profile_fragment" translatable="false">Profile</string>
+    <string name="hello_favorite_fragment" translatable="false">Favorite</string>
+    <string name="name_user" translatable="false">Name user Github</string>
+    <string name="followers">Followers</string>
+    <string name="_100" translatable="false">100</string>
+    <string name="following">Following</string>
+    <string name="user" translatable="false">user</string>
+    <string name="bio" translatable="false">bio</string>
+    <string name="repository">Repository</string>
+    <string name="view_github">View Github</string>
+    <string name="username">Username</string>
+    <string name="search">Search</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="note_edit_profile">username and password to login will not change, you can use username a and password b to login with this account</string>
+    <string name="japan_language">Japan Language</string>
+</resources>
