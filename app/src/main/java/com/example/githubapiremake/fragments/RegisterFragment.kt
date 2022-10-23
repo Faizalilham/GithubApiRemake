@@ -12,10 +12,12 @@ import androidx.navigation.Navigation
 import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentRegisterBinding
 import com.example.githubapiremake.viewmodel.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
 
 
@@ -45,8 +47,8 @@ class RegisterFragment : Fragment() {
 
             if (name.isNotBlank() && email.isNotBlank() && password.isNotBlank()) {
                if(password.length >= 6){
-                   authViewModel.doSignUp(name, email, password)
-                   authViewModel.signUpObserver().observe(requireActivity()) {
+                   authViewModel.doRegister(name, email, password)
+                   authViewModel.registerObserver().observe(requireActivity()) {
                        if (it != null) {
                            setToast("Success", "Register Succesfully", MotionToastStyle.SUCCESS)
                            Navigation.findNavController(binding.root).navigate(R.id.loginFragment)

@@ -24,11 +24,13 @@ import com.example.githubapi.viewmodel.UserGithubViewModel
 import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentListBinding
 import com.example.githubapiremake.model.UserGithub
+import dagger.hilt.android.AndroidEntryPoint
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 import java.util.*
 
 
+@AndroidEntryPoint
 class ListFragment : Fragment() {
 
     private lateinit var binding : FragmentListBinding
@@ -49,9 +51,11 @@ class ListFragment : Fragment() {
         showLoading(true)
         userGithubViewModel.searchUser("Faizal")
         setRecycler()
-        userGithubViewModel.datas.observe(requireActivity()){
-            userGithubAdapter.submitData(it)
-            showLoading(false)
+        userGithubViewModel.searchUserObserver().observe(requireActivity()){
+            if(it != null){
+                userGithubAdapter.submitData(it)
+                showLoading(false)
+            }
         }
         binding.btnVoice.setOnClickListener {
             askToSpeech()
@@ -62,7 +66,7 @@ class ListFragment : Fragment() {
     private fun searchUserGithub(search : String){
         if(search.isNotBlank()){
             userGithubViewModel.searchUser(search)
-            userGithubViewModel.datas.observe(requireActivity()){
+            userGithubViewModel.searchUserObserver().observe(requireActivity()){
                 if(it != null){
                     if(it.size > 0){
                         userGithubAdapter.submitData(it)

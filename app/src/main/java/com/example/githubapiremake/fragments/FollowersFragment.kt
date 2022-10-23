@@ -15,8 +15,10 @@ import com.example.githubapi.viewmodel.FollowUserViewModel
 import com.example.githubapiremake.databinding.FragmentFollowersBinding
 import com.example.githubapiremake.fragments.DetailFragment
 import com.example.githubapiremake.model.UserGithub
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class FollowersFragment : Fragment() {
 
     private lateinit var binding : FragmentFollowersBinding
@@ -34,8 +36,8 @@ class FollowersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setRecycler()
-        followUserViewModel.getFollowers(DetailFragment.ARGS)
-        followUserViewModel.followers.observe(requireActivity()){
+        followUserViewModel.getUserFollowers(DetailFragment.ARGS)
+        followUserViewModel.followersObserver().observe(requireActivity()){
             userGithubAdapter.submitData(it as ArrayList<UserGithub>)
         }
 

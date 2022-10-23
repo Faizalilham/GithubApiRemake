@@ -2,7 +2,6 @@ package com.example.githubapiremake.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +11,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.githubapiremake.R
 import com.example.githubapiremake.SecondActivity
-import com.example.githubapiremake.api.ApiService
 import com.example.githubapiremake.databinding.FragmentLoginBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
-import com.example.githubapiremake.util.Constant
 import com.example.githubapiremake.viewmodel.AuthViewModel
-import com.example.githubapiremake.viewmodel.PreferenceFactory
+import dagger.hilt.android.AndroidEntryPoint
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     private lateinit var binding : FragmentLoginBinding
@@ -33,7 +31,7 @@ class LoginFragment : Fragment() {
     ): View {
         binding = FragmentLoginBinding.inflate(layoutInflater)
         userLoginPreferences = UserLoginPreferences(requireActivity())
-        authViewModel = ViewModelProvider(requireActivity(), PreferenceFactory(userLoginPreferences))[AuthViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
         return binding.root
     }
 
@@ -48,8 +46,8 @@ class LoginFragment : Fragment() {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
             if(email.isNotBlank() && password.isNotBlank() ){
-                authViewModel.doSignIn(email,password)
-                authViewModel.signInObserver().observe(requireActivity()){
+                authViewModel.doLogin(email,password)
+                authViewModel.loginObserver().observe(requireActivity()){
                     if(it != null){
                         authViewModel.setToken(it.token)
                         setToast("Success !","Login Success Hallo ${it.name} ",MotionToastStyle.SUCCESS)

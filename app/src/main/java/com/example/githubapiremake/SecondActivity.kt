@@ -2,17 +2,14 @@ package com.example.githubapiremake
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.githubapiremake.databinding.ActivitySecondBinding
-import com.example.githubapiremake.datastore.UserLoginPreferences
 import com.example.githubapiremake.fragments.FavoriteFragment
 import com.example.githubapiremake.fragments.ListFragment
-import com.example.githubapiremake.viewmodel.AuthViewModel
-import com.example.githubapiremake.viewmodel.PreferenceFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SecondActivity : AppCompatActivity() {
     private var _binding : ActivitySecondBinding? = null
     private val binding get() = _binding!!

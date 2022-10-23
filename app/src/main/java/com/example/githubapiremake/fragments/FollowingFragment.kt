@@ -9,14 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapi.adapter.UserGithubAdapter
 import com.example.githubapi.viewmodel.FollowUserViewModel
 import com.example.githubapiremake.databinding.FragmentFollowersBinding
 import com.example.githubapiremake.fragments.DetailFragment
 import com.example.githubapiremake.model.UserGithub
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FollowingFragment : Fragment() {
 
     private lateinit var binding : FragmentFollowersBinding
@@ -34,8 +35,8 @@ class FollowingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setRecycler()
-        followUserViewModel.getFollowing(DetailFragment.ARGS)
-        followUserViewModel.following.observe(requireActivity()){
+        followUserViewModel.getUserFollowing(DetailFragment.ARGS)
+        followUserViewModel.followingObserver().observe(requireActivity()){
             userGithubAdapter.submitData(it as ArrayList<UserGithub>)
         }
     }

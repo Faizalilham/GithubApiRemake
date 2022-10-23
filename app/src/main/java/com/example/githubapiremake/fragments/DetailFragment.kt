@@ -21,23 +21,23 @@ import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentDetailBinding
 import com.example.githubapiremake.model.Favorite
 import com.example.githubapiremake.room.SetupRoom
+import com.example.githubapiremake.viewmodel.FavoriteViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
 
     private lateinit var binding : FragmentDetailBinding
     private lateinit var userGithubViewModel: UserGithubViewModel
+    private lateinit var favoriteViewModel: FavoriteViewModel
     private val args by navArgs<DetailFragmentArgs>()
-    private val db by lazy{
-        SetupRoom(requireActivity())
-    }
     private var _isBookmarked = false
 
     override fun onCreateView(
@@ -46,6 +46,7 @@ class DetailFragment : Fragment() {
     ): View {
         binding = FragmentDetailBinding.inflate(layoutInflater)
         userGithubViewModel = ViewModelProvider(requireActivity())[UserGithubViewModel::class.java]
+        favoriteViewModel = ViewModelProvider(requireActivity())[FavoriteViewModel::class.java]
         binding.toolbar.title = null
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         (activity as AppCompatActivity).supportActionBar?.apply {
@@ -82,18 +83,18 @@ class DetailFragment : Fragment() {
     }
 
     private fun checkFavorite(){
-        CoroutineScope(Dispatchers.IO).launch {
-            val userFavorite = db.daoFavorite().checkUserFavorite(args.userGithub.id)
-            withContext(Dispatchers.Main){
-               if(userFavorite > 0){
-                   binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),
-                       R.drawable.ic_bookmark_checked))
-                   _isBookmarked = true
-               }else{
-                   binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),
-                       R.drawable.ic_bookmark))
-                   _isBookmarked = false
-               }
+        favoriteViewModel.checkUser(args.userGithub.id)
+        favoriteViewModel.checkUserObserver().observe(requireActivity()){
+            if(it != null){
+                if(it > 0){
+                    binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),
+                        R.drawable.ic_bookmark_checked))
+                    _isBookmarked = true
+                }else{
+                    binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),
+                        R.drawable.ic_bookmark))
+                    _isBookmarked = false
+                }
             }
         }
     }
@@ -103,7 +104,7 @@ class DetailFragment : Fragment() {
         progressDialog.setTitle("Please Wait")
         progressDialog.setMessage("Load data from github api")
         progressDialog.show()
-        userGithubViewModel.detailDatas.observe(requireActivity()){
+        userGithubViewModel.detailUserObserver().observe(requireActivity()){
             if(it != null){
                 progressDialog.dismiss()
                 binding.apply {
@@ -130,28 +131,22 @@ class DetailFragment : Fragment() {
         binding.btnFavorite.setOnClickListener {
             _isBookmarked = !_isBookmarked
             if(_isBookmarked){
-                CoroutineScope(Dispatchers.IO).launch {
-                    db.daoFavorite().insertFavorite(
-                        Favorite(
-                        args.userGithub.login,
-                        args.userGithub.id,
-                        args.userGithub.avatar_url,
-                        args.userGithub.html_url
-                    )
-                    )
-                }
+               favoriteViewModel.postUser(Favorite(
+                   args.userGithub.login,
+                   args.userGithub.id,
+                   args.userGithub.avatar_url,
+                   args.userGithub.html_url
+               ))
             }else{
-                CoroutineScope(Dispatchers.IO).launch {
-                    db.daoFavorite().deleteUserFavorite(Favorite(
-                        args.userGithub.login,
-                        args.userGithub.id,
-                        args.userGithub.avatar_url,
-                        args.userGithub.html_url
-                    ))
-                    withContext(Dispatchers.Main){
-                        binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),
-                            R.drawable.ic_bookmark))
-                    }
+                favoriteViewModel.deleteUser(Favorite(
+                    args.userGithub.login,
+                    args.userGithub.id,
+                    args.userGithub.avatar_url,
+                    args.userGithub.html_url
+                ))
+                favoriteViewModel.deleteUserObserver().observe(requireActivity()){
+                    binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),
+                        R.drawable.ic_bookmark))
                 }
             }
             binding.btnFavorite.setImageDrawable(ContextCompat.getDrawable(requireActivity(),

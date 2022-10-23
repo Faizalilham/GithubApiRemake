@@ -14,12 +14,12 @@ import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentEditProfileBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
 import com.example.githubapiremake.viewmodel.AuthViewModel
-import com.example.githubapiremake.viewmodel.PreferenceFactory
 import com.example.githubapiremake.viewmodel.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 
-
+@AndroidEntryPoint
 class EditProfileFragment : Fragment() {
 
 
@@ -34,9 +34,7 @@ class EditProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         userLoginPreferences = UserLoginPreferences(requireActivity())
-        authViewModel = ViewModelProvider(requireActivity(),
-            PreferenceFactory(userLoginPreferences)
-        )[AuthViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
         userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         binding = FragmentEditProfileBinding.inflate(layoutInflater)
         return binding.root
@@ -67,8 +65,8 @@ class EditProfileFragment : Fragment() {
                 if(token != null){
                     if(name.isNotBlank() && email.isNotBlank() && password.isNotBlank()){
                         if(password.length >= 6){
-                            userViewModel.updateCurrentUser("Bearer $token",name,email,password)
-                            userViewModel.updateCurrentUserObserve().observe(requireActivity()){
+                            userViewModel.updateUser("Bearer $token",name,email,password)
+                            userViewModel.getUpdateUserObserver().observe(requireActivity()){
                                 if(it != null){
                                     setToast("Success !","Update Profile Success ",MotionToastStyle.SUCCESS)
                                     Navigation.findNavController(binding.root).navigate(R.id.profileFragment)

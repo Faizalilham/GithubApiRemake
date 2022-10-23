@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -20,25 +21,25 @@ import com.example.githubapiremake.databinding.FragmentFavoriteBinding
 import com.example.githubapiremake.model.Favorite
 import com.example.githubapiremake.model.UserGithub
 import com.example.githubapiremake.room.SetupRoom
+import com.example.githubapiremake.viewmodel.FavoriteViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
+@AndroidEntryPoint
 class FavoriteFragment : Fragment() {
 
     private lateinit var favoriteAdapter: FavoriteAdapter
-    private val db by lazy{
-        SetupRoom(requireActivity())
-    }
+    private lateinit var favoriteViewModel: FavoriteViewModel
     private val listData : MutableList<Favorite> = mutableListOf()
-
     private lateinit var binding : FragmentFavoriteBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        favoriteViewModel = ViewModelProvider(requireActivity())[FavoriteViewModel::class.java]
         binding = FragmentFavoriteBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -51,11 +52,10 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun setDataToRecycler(){
-        CoroutineScope(Dispatchers.IO).launch {
-            val datax = db.daoFavorite().getAllFavorite()
-            withContext(Dispatchers.Main){
-                listData.addAll(datax)
-                favoriteAdapter.submitData(listData)
+        favoriteViewModel.allFavorite()
+        favoriteViewModel.allFavoriteObserver().observe(requireActivity()){
+            if(it != null){
+                favoriteAdapter.submitData(it)
             }
         }
     }

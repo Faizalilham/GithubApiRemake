@@ -8,18 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.githubapiremake.MainActivity
 import com.example.githubapiremake.databinding.FragmentProfileBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
 import com.example.githubapiremake.model.UserUpdate
 import com.example.githubapiremake.viewmodel.AuthViewModel
-import com.example.githubapiremake.viewmodel.PreferenceFactory
 import com.example.githubapiremake.viewmodel.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private lateinit var binding : FragmentProfileBinding
@@ -32,7 +32,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         userLoginPreferences = UserLoginPreferences(requireActivity())
-        authViewModel = ViewModelProvider(requireActivity(),PreferenceFactory(userLoginPreferences))[AuthViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
         userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         binding = FragmentProfileBinding.inflate(layoutInflater)
         return binding.root
@@ -52,7 +52,7 @@ class ProfileFragment : Fragment() {
     private fun getProfile(){
         authViewModel.getToken().observe(requireActivity()){
             if(it != null){
-                userViewModel.getCurrentUser("Bearer $it")
+                userViewModel.currentUser("Bearer $it")
             }else{
                 Log.d("TOKEN","Token Null")
             }
@@ -60,7 +60,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setData(){
-        userViewModel.getCurrentUserObserve().observe(requireActivity()){
+        userViewModel.getCurrentUserObserver().observe(requireActivity()){
             if(it != null){
                 binding.apply {
                     tvName.text = it.name

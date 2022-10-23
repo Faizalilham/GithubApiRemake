@@ -15,11 +15,11 @@ import com.example.githubapiremake.R
 import com.example.githubapiremake.SecondActivity
 import com.example.githubapiremake.databinding.FragmentSplashBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
-import com.example.githubapiremake.util.Constant
 import com.example.githubapiremake.viewmodel.AuthViewModel
-import com.example.githubapiremake.viewmodel.PreferenceFactory
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class SplashFragment : Fragment() {
 
 
@@ -31,7 +31,7 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         userLoginPreferences = UserLoginPreferences(requireActivity())
-        authViewModel = ViewModelProvider(requireActivity(), PreferenceFactory(userLoginPreferences))[AuthViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
         binding = FragmentSplashBinding.inflate(layoutInflater)
         return binding.root
     }
