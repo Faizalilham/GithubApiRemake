@@ -16,7 +16,8 @@
         android:layout_marginTop="@dimen/dp15"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
+    
 
     <TextView
         android:id="@+id/tvName"
@@ -113,6 +114,17 @@
         app:layout_constraintTop_toBottomOf="@id/tvPassword"
         app:strokeColor="@color/white"
         app:strokeWidth="2dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="25dp"
+        android:src="@drawable/ic_camera"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

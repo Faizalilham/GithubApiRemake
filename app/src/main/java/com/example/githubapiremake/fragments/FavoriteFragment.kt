@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapi.adapter.FavoriteAdapter
 import com.example.githubapiremake.R
+import com.example.githubapiremake.SecondActivity
 import com.example.githubapiremake.databinding.FragmentFavoriteBinding
 import com.example.githubapiremake.model.Favorite
 import com.example.githubapiremake.model.UserGithub
@@ -77,12 +78,17 @@ class FavoriteFragment : Fragment() {
                 startActivity(intent)
             }
         })
-        binding.recyclerFavorite.apply {
-            adapter = favoriteAdapter
-            layoutManager = if(context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-                GridLayoutManager(requireActivity(),2)
-            }else{
-                LinearLayoutManager(requireActivity())
+        binding.apply {
+            recyclerFavorite.apply {
+                adapter = favoriteAdapter
+                layoutManager = if(context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    GridLayoutManager(requireActivity(),2)
+                }else{
+                    LinearLayoutManager(requireActivity())
+                }
+            }
+            toolbar.setOnClickListener {
+                startActivity(Intent(requireActivity(),SecondActivity::class.java).also{activity?.finish()})
             }
         }
     }

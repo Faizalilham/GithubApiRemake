@@ -1,5 +1,6 @@
 package com.example.githubapiremake
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
@@ -27,13 +28,6 @@ class SecondActivity : AppCompatActivity() {
                     .commit()
             }
         }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.secondFragmentContainerView, ListFragment())
-            .commit()
     }
 
 

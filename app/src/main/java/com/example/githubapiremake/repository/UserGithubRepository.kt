@@ -35,7 +35,7 @@ class UserGithubRepository @Inject constructor(private val api : ApiEndPoint) {
                             datas.postValue(body.items)
                         }
                     }else{
-                        Log.d("Error", response.message())
+                        Log.d("Error", response.toString())
                     }
                 }
 

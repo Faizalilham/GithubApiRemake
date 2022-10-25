@@ -21,7 +21,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL_AUTH = "https://api-resto-auth.herokuapp.com/"
+    private const val BASE_URL_AUTH = "https://api-resto-auth.herokuapp.com/" // OAUTH WITH BEARER TOKEN
     private const val BASE_URL = "https://api.github.com/"
 
     @Provides
