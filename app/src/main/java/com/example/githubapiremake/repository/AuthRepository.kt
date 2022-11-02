@@ -70,7 +70,7 @@ class AuthRepository @Inject constructor(private val api : AuthEndPoint) {
 
                     }else{
                         signIn.postValue(null)
-                        println("Not Success")
+                        println("Not Success -> ${response.message()}")
                     }
                 }
 

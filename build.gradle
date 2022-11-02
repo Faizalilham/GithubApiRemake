@@ -4,6 +4,9 @@ buildscript {
     dependencies {
         classpath("androidx.navigation.safeargs.kotlin:androidx.navigation.safeargs.kotlin.gradle.plugin:2.5.0")
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath 'com.google.gms:google-services:4.3.14'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+
     }
 }
 plugins {

@@ -52,8 +52,16 @@ class SplashFragment : Fragment() {
                 }else{
                     Navigation.findNavController(binding.root).navigate(R.id.loginFragment)
                 }
-            }else{
-                Toast.makeText(requireActivity(), "Token Null", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        authViewModel.getDataAccount().observe(requireActivity()){
+            if(it != null){
+                if(!it.equals("undefined")){
+                    startActivity(Intent(requireActivity(),SecondActivity::class.java).also{ activity?.finish()})
+                }else{
+                    Navigation.findNavController(binding.root).navigate(R.id.loginFragment)
+                }
             }
         }
 

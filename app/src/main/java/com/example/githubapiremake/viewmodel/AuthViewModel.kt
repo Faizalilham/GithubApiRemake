@@ -3,6 +3,7 @@ package com.example.githubapiremake.viewmodel
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.githubapiremake.datastore.GoogleSignInPreferences
 import com.example.githubapiremake.datastore.UserLoginPreferences
 import com.example.githubapiremake.model.*
 import com.example.githubapiremake.repository.AuthRepository
@@ -22,6 +23,25 @@ class AuthViewModel @Inject constructor(
     private val repository : AuthRepository) :ViewModel() {
 
     private val userPreferences = UserLoginPreferences(context)
+    private var  googleAuth = GoogleSignInPreferences(context)
+
+
+    fun setData(account :String,email :String,name :String,image : String){
+        viewModelScope.launch {
+            googleAuth.setData(account,email, name,image)
+        }
+    }
+
+    fun getDataAccount() :LiveData<String> = googleAuth.getDataAccount().asLiveData()
+    fun getDataEmail() :LiveData<String> = googleAuth.getDataEmail().asLiveData()
+    fun getDataName() :LiveData<String> = googleAuth.getDataName().asLiveData()
+    fun getDataImage() :LiveData<String> = googleAuth.getDataImage().asLiveData()
+
+    fun deleteData(){
+        viewModelScope.launch {
+            googleAuth.deleteData()
+        }
+    }
 
 
     fun setToken(token : String){

@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.githubapiremake.MainActivity
 import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentProfileBinding
@@ -24,7 +26,9 @@ import com.example.githubapiremake.viewmodel.AuthViewModel
 import com.example.githubapiremake.viewmodel.BlurViewModel
 import com.example.githubapiremake.viewmodel.UserViewModel
 import com.example.githubapiremake.worker.IMAGE_BLURRED
+import com.example.githubapiremake.worker.OUTPUT_PATH
 import com.example.githubapiremake.worker.PROFILE_IMAGE
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
@@ -39,6 +43,7 @@ class ProfileFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var authViewModel: AuthViewModel
     private lateinit var userLoginPreferences: UserLoginPreferences
+    private lateinit var auth : FirebaseAuth
     private val blur by lazy{
         activity?.application?.let { BlurViewModel(it) }
     }
@@ -51,6 +56,7 @@ class ProfileFragment : Fragment() {
         userLoginPreferences = UserLoginPreferences(requireActivity())
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
         userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        auth = FirebaseAuth.getInstance()
         binding = FragmentProfileBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -63,7 +69,6 @@ class ProfileFragment : Fragment() {
         binding.btnLanguage.setOnClickListener {
             setLanguage("ja")
         }
-        openGallery()
         setImageBlured()
 
     }
@@ -85,10 +90,27 @@ class ProfileFragment : Fragment() {
                     tvName.text = it.name
                     tvEmail.text = it.email
                     tvPassword.text = it.password
+                    btnEditProfile.isEnabled = true
+                    fab.isEnabled = true
+                    openGallery()
                 }
                 doEditProfile(it.name,it.email,it.password)
             }else{
                 Log.d("PROFILE","Profile Null")
+            }
+        }
+
+        authViewModel.getDataAccount().observe(requireActivity()){if(it != null){binding.tvName.text = it } }
+        authViewModel.getDataEmail().observe(requireActivity()){if(it != null){binding.tvEmail.text = it} }
+        authViewModel.getDataName().observe(requireActivity()){if(it != null){binding.tvPassword.text = it }}
+        authViewModel.getDataImage().observe(requireActivity()){
+            if(it != null && it != "undefined"){
+                Log.d("PHOTO_URL",it)
+                binding.apply {
+                    Glide.with(root.context).load(it).into(imageUser)
+                    btnEditProfile.isEnabled = false
+                    fab.isEnabled = false
+                }
             }
         }
     }
@@ -103,8 +125,13 @@ class ProfileFragment : Fragment() {
 
     private fun doLogout(){
         binding.btnLogout.setOnClickListener {
+            auth.signOut()
             startActivity(Intent(requireActivity(),MainActivity::class.java).also {
-                authViewModel.deleteToken()
+                authViewModel.apply {
+                    deleteToken()
+                    deleteData()
+                }
+
             })
         }
     }
@@ -122,7 +149,6 @@ class ProfileFragment : Fragment() {
             uri = it
             binding.imageUser.setImageURI(it)
             blur?.setImageUri(it)
-            Navigation.findNavController(binding.root).navigate(R.id.profileFragment)
             if(uri != null){
                 saveImage()
             }
@@ -137,8 +163,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setImageBlured(){
-        val image = BitmapFactory.decodeFile(requireActivity().applicationContext.filesDir.path + File.separator +"blur_outputs"+ File.separator + IMAGE_BLURRED)
-        binding.imageUser.setImageBitmap(image)
+        val image = BitmapFactory.decodeFile(requireActivity().applicationContext.filesDir.path + File.separator +OUTPUT_PATH+ File.separator + IMAGE_BLURRED)
+        if(binding.imageUser.drawable == null){
+            binding.imageUser.setImageBitmap(image)
+        }
     }
 
     private fun saveImage(){
@@ -170,7 +198,10 @@ class ProfileFragment : Fragment() {
 
             }
         }
+        Log.d("YGGY",outputFile.toString())
+        Log.d("YGGGY",Uri.fromFile(outputFile).toString())
         return Uri.fromFile(outputFile)
+
     }
 
 
