@@ -15,6 +15,7 @@ import com.example.githubapiremake.R
 import com.example.githubapiremake.SecondActivity
 import com.example.githubapiremake.databinding.FragmentSplashBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
+import com.example.githubapiremake.util.CheckUserUtils
 import com.example.githubapiremake.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,7 +48,8 @@ class SplashFragment : Fragment() {
     private fun isLogin(){
         authViewModel.getToken().observe(requireActivity()){
             if(it != null){
-                if(!it.equals("undefined")){
+                val validate = CheckUserUtils.validateUser(it)
+                if(validate){
                     startActivity(Intent(requireActivity(),SecondActivity::class.java).also{ activity?.finish()})
                 }else{
                     Navigation.findNavController(binding.root).navigate(R.id.loginFragment)

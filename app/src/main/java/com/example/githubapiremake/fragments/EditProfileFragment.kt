@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentEditProfileBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
+import com.example.githubapiremake.util.UpdateProfile
 import com.example.githubapiremake.viewmodel.AuthViewModel
 import com.example.githubapiremake.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,30 +61,35 @@ class EditProfileFragment : Fragment() {
             val name = binding.etName.text.toString().trim()
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
-
-            authViewModel.getToken().observe(requireActivity()){ token ->
-                if(token != null){
-                    if(name.isNotBlank() && email.isNotBlank() && password.isNotBlank()){
-                        if(password.length >= 6){
-                            userViewModel.updateUser("Bearer $token",name,email,password)
-                            userViewModel.getUpdateUserObserver().observe(requireActivity()){
-                                if(it != null){
-                                    setToast("Success !","Update Profile Success ",MotionToastStyle.SUCCESS)
-                                    Navigation.findNavController(binding.root).navigate(R.id.profileFragment)
-                                }else{
-                                    setToast("Error !","Update Profile Failed ",MotionToastStyle.ERROR)
+            val validate = UpdateProfile.validateEditProfile(name,email)
+            if(validate == "success"){
+                authViewModel.getToken().observe(requireActivity()){ token ->
+                    if(token != null){
+                        if(name.isNotBlank() && email.isNotBlank() && password.isNotBlank()){
+                            if(password.length >= 6){
+                                userViewModel.updateUser("Bearer $token",name,email,password)
+                                userViewModel.getUpdateUserObserver().observe(requireActivity()){
+                                    if(it != null){
+                                        setToast("Success !","Update Profile Success ",MotionToastStyle.SUCCESS)
+                                        Navigation.findNavController(binding.root).navigate(R.id.profileFragment)
+                                    }else{
+                                        setToast("Error !","Update Profile Failed ",MotionToastStyle.ERROR)
+                                    }
                                 }
+                            }else{
+                                setToast("Warning !","Password must be at least 6 characters ",MotionToastStyle.WARNING)
                             }
                         }else{
-                            setToast("Warning !","Password must be at least 6 characters ",MotionToastStyle.WARNING)
+                            setToast("Warning !","Field Cannot be Empety",MotionToastStyle.WARNING)
                         }
                     }else{
-                        setToast("Warning !","Field Cannot be Empety",MotionToastStyle.WARNING)
+                        Log.d("TOKEN","Token Null")
                     }
-                }else{
-                    Log.d("TOKEN","Token Null")
                 }
+            }else{
+                setToast("Warning !",validate,MotionToastStyle.WARNING)
             }
+
         }
     }
 

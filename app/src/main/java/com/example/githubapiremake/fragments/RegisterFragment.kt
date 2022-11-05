@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentRegisterBinding
+import com.example.githubapiremake.util.RegisterUtils
 import com.example.githubapiremake.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import www.sanju.motiontoast.MotionToast
@@ -44,23 +45,19 @@ class RegisterFragment : Fragment() {
             val name = binding.etUser.text.toString().trim()
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
-
-            if (name.isNotBlank() && email.isNotBlank() && password.isNotBlank()) {
-               if(password.length >= 6){
-                   authViewModel.doRegister(name, email, password)
-                   authViewModel.registerObserver().observe(requireActivity()) {
-                       if (it != null) {
-                           setToast("Success", "Register Succesfully", MotionToastStyle.SUCCESS)
-                           Navigation.findNavController(binding.root).navigate(R.id.loginFragment)
-                       }else{
-                           Toast.makeText(requireActivity(), "Null Blok", Toast.LENGTH_SHORT).show()
-                       }
-                   }
-               }else{
-                   setToast("Warning !", "Password must be at least 6 characters", MotionToastStyle.WARNING)
-               }
-            } else {
-                setToast("Warning !", "Field cannot be empety", MotionToastStyle.WARNING)
+            val validate = RegisterUtils.validateUserRegister(name,email,password)
+            if(validate == "success"){
+                authViewModel.doRegister(name, email, password)
+                authViewModel.registerObserver().observe(requireActivity()) {
+                    if (it != null) {
+                        setToast("Success", "Register Succesfully", MotionToastStyle.SUCCESS)
+                        Navigation.findNavController(binding.root).navigate(R.id.loginFragment)
+                    }else{
+                        Toast.makeText(requireActivity(), "Null Blok", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }else{
+                setToast("Warning", validate, MotionToastStyle.WARNING)
             }
         }
     }

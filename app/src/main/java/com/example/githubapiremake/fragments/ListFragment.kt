@@ -24,6 +24,7 @@ import com.example.githubapi.viewmodel.UserGithubViewModel
 import com.example.githubapiremake.R
 import com.example.githubapiremake.databinding.FragmentListBinding
 import com.example.githubapiremake.model.UserGithub
+import com.example.githubapiremake.util.SearchUtil
 import dagger.hilt.android.AndroidEntryPoint
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
@@ -64,7 +65,8 @@ class ListFragment : Fragment() {
     }
 
     private fun searchUserGithub(search : String){
-        if(search.isNotBlank()){
+        val validate = SearchUtil.validateSearch(search)
+        if(validate == "success"){
             userGithubViewModel.searchUser(search)
             userGithubViewModel.searchUserObserver().observe(requireActivity()){
                 if(it != null){

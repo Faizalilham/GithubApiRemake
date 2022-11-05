@@ -6,14 +6,17 @@ object RegisterUtils {
         name: String,
         email: String,
         password: String
-    ): Boolean {
+    ): String {
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()){
-            return false
+            return "Field cannot be empety"
+        }
+        if(!email.contains("@")){
+            return "Error email"
         }
         if (password.length <= 6){
-            return false
+            return "Password must be at least 6 digit"
         }
-        return true
+        return "success"
     }
 
 

@@ -16,6 +16,7 @@ import com.example.githubapiremake.R
 import com.example.githubapiremake.SecondActivity
 import com.example.githubapiremake.databinding.FragmentLoginBinding
 import com.example.githubapiremake.datastore.UserLoginPreferences
+import com.example.githubapiremake.util.LoginUtils
 import com.example.githubapiremake.viewmodel.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -108,7 +109,8 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
-            if(email.isNotBlank() && password.isNotBlank() ){
+            val validate = LoginUtils.validateUserlogin(email,password)
+            if(validate == "success"){
                 authViewModel.doLogin(email,password)
                 authViewModel.loginObserver().observe(requireActivity()){
                     if(it != null){
@@ -120,7 +122,7 @@ class LoginFragment : Fragment() {
                     }
                 }
             }else{
-                setToast("Warning !","Field cannot be empety",MotionToastStyle.WARNING)
+                setToast("Warning !",validate,MotionToastStyle.WARNING)
             }
 
         }
